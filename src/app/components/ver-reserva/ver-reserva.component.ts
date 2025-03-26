@@ -1,35 +1,47 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ReservaService } from '../../services/reserva.service';
-import { HeaderComponent } from "../header/header.component";
+import { ActivatedRoute } from '@angular/router'; // Para acessar parâmetros da URL
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-ver-reserva',
   standalone: true,
   templateUrl: './ver-reserva.component.html',
   styleUrls: ['./ver-reserva.component.css'],
-  imports: [HeaderComponent],
+  imports:[ CommonModule]
 })
 export class VerReservaComponent implements OnInit {
-  reserva: any;
+  reserva: any = {}; // Objeto para armazenar os dados da reserva
 
-  constructor(
-    private reservaService: ReservaService,
-    private route: ActivatedRoute
-  ) {}
+  // Dados fake de reserva para simulação
+  reservasFake: any[] = [
+    {
+      codigo: 'ABC123',
+      dataHora: '2025-04-10 10:00',
+      aeroportoOrigem: 'Aeroporto de São Paulo (GRU)',
+      aeroportoDestino: 'Aeroporto do Rio de Janeiro (GIG)',
+      valorGasto: 500.00,
+      milhasGastadas: 3000,
+      estado: 'CRIADA',
+    },
+    {
+      codigo: 'DEF456',
+      dataHora: '2025-04-12 15:30',
+      aeroportoOrigem: 'Aeroporto de Brasília (BSB)',
+      aeroportoDestino: 'Aeroporto de Recife (REC)',
+      valorGasto: 800.00,
+      milhasGastadas: 4000,
+      estado: 'CHECK-IN',
+    },
+    // Outras reservas fake
+  ];
 
-   ngOnInit() {
-    const codigoReserva = this.route.snapshot.paramMap.get('codigoReserva');
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    // Pega o código da reserva da URL
+    const codigoReserva = this.route.snapshot.paramMap.get('codigo');
     
-    // Verifica se o codigoReserva não é null antes de chamar o método
-    if (codigoReserva !== null) {
-      this.reserva = this.reservaService.getReservaByCodigo(codigoReserva);
-    } else {
-      console.error('Código da reserva não fornecido');
-      // Trate o caso onde não há código de reserva, por exemplo, exibir uma mensagem de erro para o usuário
-    }
+    // Busca os dados da reserva fake com base no código
+    this.reserva = this.reservasFake.find(reserva => reserva.codigo === codigoReserva);
   }
 }
-
-
-
